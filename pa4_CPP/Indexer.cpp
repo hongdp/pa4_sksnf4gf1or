@@ -9,6 +9,7 @@
 #include <functional>
 using namespace std;
 
+
 // Reads content from the supplied input file stream, and transforms the
 // content into the actual on-disk inverted index file.
 
@@ -59,5 +60,20 @@ void Indexer::index(ifstream& content, ostream& outfile)
 		});
 		outfile << endl;
 	}
-	
+
+}
+
+Indexer::Indexer()
+{
+    ifstream myFile;
+    myFile.open("stop_words.txt");
+    std::string word;
+    if (myFile.is_open()) {
+      while (myFile >> word) {
+        //add word to set
+        stop_words.insert(word);
+        //cout << word<< endl;
+      }
+    }
+    myFile.close();
 }
