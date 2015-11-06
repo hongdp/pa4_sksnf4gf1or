@@ -3,7 +3,7 @@
 CC = g++
 LD = g++
 
-CFLAGS = -pedantic -Wall -c
+CFLAGS = -pedantic -Wall -c -std=c++11
 SERVER_LFLAGS = -ldl -pthread -lpthread
 INDEXER_LFLAGS = 
 
