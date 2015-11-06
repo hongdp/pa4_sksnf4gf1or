@@ -7,6 +7,7 @@
 #include <sstream>
 #include <cmath>
 #include <functional>
+#include <string>
 using namespace std;
 
 
@@ -33,6 +34,25 @@ void Indexer::index(ifstream& content, ostream& outfile)
 		string word;
 		total_doc_num++;
 		while (strstream >> word) {
+			for_each(word.begin(), word.end(), [](char& ch){ch = tolower(ch);});
+			if (stop_words.find(word) != stop_words.end()) {
+				continue;
+			}
+			try {
+				for(auto it = word.begin(); it != word.end();){
+					if (!isalnum(*it)) {
+						word.erase(it);
+					} else {
+						it++;
+					}
+				}
+			} catch (...) {
+				cout << word << endl;
+			}
+			
+			if (word.empty()) {
+				continue;
+			}
 			word_occurance[word]++;
 		}
 		for (auto it = word_occurance.begin(); it != word_occurance.end(); it++) {
@@ -41,7 +61,7 @@ void Indexer::index(ifstream& content, ostream& outfile)
 	}
 	
 	for_each(word_infos.begin(), word_infos.end(), [&idfs, &normalization_factors, &total_doc_num](const pair<string, vector<Doc_Info_T> >& doc_info_pair){
-		double idf = log(((double)total_doc_num)/doc_info_pair.second.size());
+		double idf = log10(((double)total_doc_num)/doc_info_pair.second.size());
 		idfs[doc_info_pair.first] = idf;
 		for_each(doc_info_pair.second.begin(), doc_info_pair.second.end(), [idf, &normalization_factors](const Doc_Info_T& doc_info){
 			normalization_factors[doc_info.doc_id] += pow(doc_info.num_occurance*idf, 2);
