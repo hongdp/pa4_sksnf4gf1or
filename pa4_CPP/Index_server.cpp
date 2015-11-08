@@ -10,14 +10,7 @@
 
 #include "mongoose.h"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ifstream;
-using std::ostream;
-using std::ostringstream;
-using std::string;
-using std::vector;
+using namespace std;
 
 namespace {
     int handle_request(mg_connection *);
@@ -62,6 +55,7 @@ void Index_server::run(int port)
 void Index_server::init(ifstream& infile)
 {
     // Fill in this method to load the inverted index from disk.
+	
 }
 
 // Search the index for documents matching the query. The results are to be
@@ -70,8 +64,22 @@ void Index_server::init(ifstream& infile)
 void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 {
     cout << "Processing query '" << query << "'" << endl;
-
+	
     // Fill this in to process queries.
+	stringstream strstream(query);
+	string temp_word;
+	vector<string> query_words;
+	while (strstream >> temp_word) {
+		if (index_map.find(temp_word) == index_map.end()) {
+			continue;
+		}
+		for (auto it = index_map[temp_word].second.weights.begin(); it != index_map[temp_word].second.weights.end(); it++) {
+			auto hit_it = lower_bound(hits.begin(), hits.end)
+		}
+	}
+	
+	
+	
 }
 
 namespace {

@@ -7,12 +7,15 @@
 #include <vector>
 
 struct Query_hit {
-    Query_hit(const char *id_, double score_)
+	Query_hit(const std::string& *id_, double score_)
         : id(id_), score(score_)
         {}
 
-    const char *id;
+	std::string id;
     double score;
+	bool operator<(const Query_hit& rhs){
+		return id < rhs.id;
+	}
 };
 
 class Index_server {
