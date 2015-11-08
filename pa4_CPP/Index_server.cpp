@@ -7,6 +7,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <sstream>
+#include <vector>
 
 #include "mongoose.h"
 
@@ -51,9 +52,24 @@ void Index_server::run(int port)
     pthread_exit(0);
 }
 
+struct weight{
+  int doc_id;
+  double weight
+};
+
+struct word_info{
+  double idf;
+  vector <weight> weights;
+};
+
+map <string,word_info> index_map;
 // Load index data from the file of the given name.
 void Index_server::init(ifstream& infile)
 {
+    while(getline(infile, index)){
+
+      
+    }
     // Fill in this method to load the inverted index from disk.
 	
 }
