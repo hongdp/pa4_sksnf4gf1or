@@ -140,6 +140,14 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 	map<string, Query_hit> hits_map;
 	// stat feq
 	while (strstream >> token) {
+		for_each(token.begin(), token.end(), [](char& ch){ch = tolower(ch);});
+		for(auto it = token.begin(); it != token.end();){
+			if (!isalnum(*it)) {
+				token.erase(it);
+			} else {
+				it++;
+			}
+		}
 		if (index_map.find(token) == index_map.end()) {
 			continue;
 		}
@@ -160,7 +168,7 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 	// calculate Score
 	for (auto &word_pair : query_words_info) {
 		string temp_word = word_pair.first;
-		int w = query_words_info[temp_word].w;
+		double w = query_words_info[temp_word].w;
 		for (auto it = index_map[temp_word].weights.begin(); it != index_map[temp_word].weights.end(); it++) {
 			string id;
 			stringstream id_stream;

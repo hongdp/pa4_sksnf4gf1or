@@ -14,9 +14,9 @@
     <ul>
         {% for photo in photos %}
         <li>
-            <a href="./?q={{photo[1]}}"><img src="{{photo[0]}}"/></a>
+            <a href="./search?query={{photo.caption}}"><img src="/static/{{photo.url}}"/></a>
 
-            <p>{{photo[1]}}</p>
+            <p>{{photo.caption}}</p>
         </li>
         {% endfor %}
     </ul>
