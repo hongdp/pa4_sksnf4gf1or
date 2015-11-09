@@ -8,6 +8,9 @@
 #include <pthread.h>
 #include <sstream>
 #include <vector>
+#include <map>
+#include <cmath>
+
 
 #include "mongoose.h"
 
@@ -19,6 +22,9 @@ using std::ostream;
 using std::ostringstream;
 using std::string;
 using std::vector;
+using std::map;
+using std::stringstream;
+using std::getline;
 
 namespace {
     int handle_request(mg_connection *);
@@ -61,7 +67,8 @@ void Index_server::run(int port)
 
 struct weight{
   int doc_id;
-  double weight
+  double weight;
+
 };
 
 struct word_info{
@@ -73,9 +80,49 @@ map <string,word_info> index_map;
 // Load index data from the file of the given name.
 void Index_server::init(ifstream& infile)
 {
+    string index;
     while(getline(infile, index)){
+      stringstream ss;
+      ss<<index;
+      string word;
+      ss>>word;
 
-      
+      double idf;
+      ss>>idf;
+
+      int n;
+      ss>>n;
+      vector<weight> ws;
+      for(int i = 0; i<n; i++){
+        int doc_id;
+        ss>>doc_id;
+
+        int tf;
+        ss>>tf;
+
+        double normal_factor;
+        ss>>normal_factor;
+
+        double w = (idf*tf)/(sqrt(normal_factor));
+
+        weight we;
+        we.doc_id = doc_id;
+        we.weight = w;
+
+        ws.push_back(we);
+      }
+
+      word_info w_i;
+      w_i.idf = idf;
+      w_i.weights = ws;
+
+      index_map[word] = w_i;
+    }
+
+    for(auto it = index_map.cbegin(); it != index_map.cend(); ++it)
+    {
+
+        cout << it->first << " " << it->second.weights.size()<< "\n";
     }
     // Fill in this method to load the inverted index from disk.
 }
