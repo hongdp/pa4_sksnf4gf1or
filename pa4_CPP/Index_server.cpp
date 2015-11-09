@@ -12,9 +12,19 @@
 #include <string>
 #include <cmath>
 
+
 #include "mongoose.h"
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::ostream;
+using std::map;
+using std::stringstream;
+using std::cerr;
+using std::endl;
+using std::ostringstream;
+using std::ifstream;
+using std::cout;
 
 namespace {
     int handle_request(mg_connection *);
@@ -72,8 +82,41 @@ void Index_server::init(ifstream& infile)
 {
     string index;
     while(getline(infile, index)){
-		
-      
+      stringstream ss;
+      ss<<index;
+      string word;
+      ss>>word;
+
+      double idf;
+      ss>>idf;
+
+      int n;
+      ss>>n;
+      vector<weight> ws;
+      for(int i = 0; i<n; i++){
+        int doc_id;
+        ss>>doc_id;
+
+        int tf;
+        ss>>tf;
+
+        double normal_factor;
+        ss>>normal_factor;
+
+        double w = (idf*tf)/(sqrt(normal_factor));
+
+        weight we;
+        we.doc_id = doc_id;
+        we.weight = w;
+
+        ws.push_back(we);
+      }
+
+      word_info w_i;
+      w_i.idf = idf;
+      w_i.weights = ws;
+
+      index_map[word] = w_i;
     }
     // Fill in this method to load the inverted index from disk.
 	
@@ -103,24 +146,25 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 		query_words_info[token].feq++;
 	}
 	// calculate normalization factor of the query
-	for (auto word_pair : query_words_info) {
+	for (auto &word_pair : query_words_info) {
 		string temp_word = word_pair.first;
 		int feq = word_pair.second.feq;
 		normalization_factor += pow(feq*index_map[temp_word].idf, 2);
 	}
 	// calculate W_ik
-	for (auto word_pair : query_words_info) {
+	for (auto &word_pair : query_words_info) {
 		string temp_word = word_pair.first;
 		int feq = word_pair.second.feq;
 		word_pair.second.w = feq*index_map[temp_word].idf/sqrt(normalization_factor);
 	}
 	// calculate Score
-	for (auto word_pair : query_words_info) {
+	for (auto &word_pair : query_words_info) {
 		string temp_word = word_pair.first;
 		int w = query_words_info[temp_word].w;
 		for (auto it = index_map[temp_word].weights.begin(); it != index_map[temp_word].weights.end(); it++) {
 			string id;
-			stringstream id_stream(it->doc_id);
+			stringstream id_stream;
+			id_stream << it->doc_id;
 			id_stream >> id;
 			auto hit_it = hits_map.find(id);
 			if (hit_it != hits_map.end()) {
