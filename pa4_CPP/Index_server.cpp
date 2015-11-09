@@ -8,6 +8,9 @@
 #include <pthread.h>
 #include <sstream>
 #include <vector>
+#include <map>
+#include <string>
+#include <cmath>
 
 #include "mongoose.h"
 
@@ -22,6 +25,17 @@ namespace {
     ostream& operator<< (ostream&, const Query_hit&);
 }
 
+struct weight{
+	int doc_id;
+	double weight;
+};
+
+struct word_info{
+	double idf;
+	vector <weight> weights;
+};
+
+map <string,word_info> index_map;
 pthread_mutex_t mutex;
 
 // Runs the index server on the supplied port number.
@@ -52,22 +66,12 @@ void Index_server::run(int port)
     pthread_exit(0);
 }
 
-struct weight{
-  int doc_id;
-  double weight
-};
 
-struct word_info{
-  double idf;
-  vector <weight> weights;
-};
-
-map <string,word_info> index_map;
 // Load index data from the file of the given name.
 void Index_server::init(ifstream& infile)
 {
     while(getline(infile, index)){
-
+		
       
     }
     // Fill in this method to load the inverted index from disk.
@@ -79,22 +83,59 @@ void Index_server::init(ifstream& infile)
 // this method is called.
 void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 {
+	struct token_info_t{
+		int feq;
+		double w;
+	};
     cout << "Processing query '" << query << "'" << endl;
-	
+	double normalization_factor = 0;
     // Fill this in to process queries.
 	stringstream strstream(query);
-	string temp_word;
-	vector<string> query_words;
-	while (strstream >> temp_word) {
-		if (index_map.find(temp_word) == index_map.end()) {
+	string token;
+	map<string, token_info_t> query_words_info;
+	map<string, Query_hit> hits_map;
+	// stat feq
+	while (strstream >> token) {
+		if (index_map.find(token) == index_map.end()) {
 			continue;
 		}
-		for (auto it = index_map[temp_word].second.weights.begin(); it != index_map[temp_word].second.weights.end(); it++) {
-			auto hit_it = lower_bound(hits.begin(), hits.end)
+		query_words_info[token].feq++;
+	}
+	// calculate normalization factor of the query
+	for (auto word_pair : query_words_info) {
+		string temp_word = word_pair.first;
+		int feq = word_pair.second.feq;
+		normalization_factor += pow(feq*index_map[temp_word].idf, 2);
+	}
+	// calculate W_ik
+	for (auto word_pair : query_words_info) {
+		string temp_word = word_pair.first;
+		int feq = word_pair.second.feq;
+		word_pair.second.w = feq*index_map[temp_word].idf/sqrt(normalization_factor);
+	}
+	// calculate Score
+	for (auto word_pair : query_words_info) {
+		string temp_word = word_pair.first;
+		int w = query_words_info[temp_word].w;
+		for (auto it = index_map[temp_word].weights.begin(); it != index_map[temp_word].weights.end(); it++) {
+			string id;
+			stringstream id_stream(it->doc_id);
+			id_stream >> id;
+			auto hit_it = hits_map.find(id);
+			if (hit_it != hits_map.end()) {
+				hit_it->second.score += w*it->weight;
+			} else {
+				hits_map.insert(make_pair(id,Query_hit{id,w*it->weight}));
+			}
 		}
 	}
 	
-	
+	for (auto hit_it = hits_map.begin(); hit_it != hits_map.end(); hit_it++) {
+		hits.push_back(hit_it->second);
+	}
+	sort(hits.begin(), hits.end(), [](const Query_hit& lhs, const Query_hit& rhs){
+		return lhs.score > rhs.score;
+	});
 	
 }
 
@@ -186,7 +227,7 @@ namespace {
     ostream& operator<< (ostream& os, const Query_hit& hit)
     {
         os << "{" << "\"id\":\"";
-        int id_size = strlen(hit.id);
+        int id_size = hit.id.size();
         for (int i = 0; i < id_size; i++) {
             if (hit.id[i] == '"') {
                 os << "\\";

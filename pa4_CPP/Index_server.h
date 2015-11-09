@@ -7,13 +7,13 @@
 #include <vector>
 
 struct Query_hit {
-	Query_hit(const std::string& *id_, double score_)
+	Query_hit(const std::string& id_, double score_)
         : id(id_), score(score_)
         {}
 
 	std::string id;
     double score;
-	bool operator<(const Query_hit& rhs){
+	bool operator< (const Query_hit& rhs) const{
 		return id < rhs.id;
 	}
 };
