@@ -18,22 +18,23 @@
     <div class="header clearfix">
       <nav>
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="/sksnf4gf1or/pa3/">Home</a></li>
+          <li class="active"><a href="/sksnf4gf1or/pa4/">Home</a></li>
+          <li class="active"><a href="/sksnf4gf1or/pa4/search">Search</a></li>
           {% if login %}
-          <li class="active"><a href='/sksnf4gf1or/pa3/albums'>My Albums</a></li>
-          <li class="active"><a href='/sksnf4gf1or/pa3/user/edit'>Edit Profile</a></li>
+          <li class="active"><a href='/sksnf4gf1or/pa4/albums'>My Albums</a></li>
+          <li class="active"><a href='/sksnf4gf1or/pa4/user/edit'>Edit Profile</a></li>
           {% else %}
-          <li class="active"><a href='/sksnf4gf1or/pa3/albums'>Public Albums</a></li>
+          <li class="active"><a href='/sksnf4gf1or/pa4/albums'>Public Albums</a></li>
           {% endif %}
           {% if not hideLogin and not login %}
-          <li class="active"><a href='/sksnf4gf1or/pa3/user/login?url={{request.url}}'>Login</a></li>
+          <li class="active"><a href='/sksnf4gf1or/pa4/user/login?url={{request.url}}'>Login</a></li>
           {% endif %}
           {% if login %}
-          <li class="active"><a href='/sksnf4gf1or/pa3/user/logout'>Logout</a></li>
+          <li class="active"><a href='/sksnf4gf1or/pa4/user/logout'>Logout</a></li>
           {% endif %}
         </ul>
       </nav>
-      <h3 class="text-muted"><a href="/sksnf4gf1or/pa3/">The Great Album Wall</a></h3>
+      <h3 class="text-muted"><a href="/sksnf4gf1or/pa4/">The Great Album Wall</a></h3>
     </div>
 
     {% block content %}{% block extrascripts %}{% endblock %}{% endblock %}

@@ -14,9 +14,19 @@
     <ul>
         {% for photo in photos %}
         <li>
-            <a href="./search?query={{photo.caption}}"><img src="/static/{{photo.url}}"/></a>
+            <div class="row">
+                <div class="col-xs-6">
+                    <a href="./search?query={{photo.caption}}"><img src="/static/{{photo.url}}"/></a>
+                </div>
+                <div class="col-xs-3">
+                    <p>{{photo.caption}}</p>
+                </div>
+                <div class="col-xs-3">
+                    <p>{{photo.picid}}</p>
+                </div>
+            </div>
 
-            <p>{{photo.caption}}</p>
+
         </li>
         {% endfor %}
     </ul>
