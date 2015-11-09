@@ -70,6 +70,7 @@ void Index_server::run(int port)
 // Load index data from the file of the given name.
 void Index_server::init(ifstream& infile)
 {
+    string index;
     while(getline(infile, index)){
 		
       
