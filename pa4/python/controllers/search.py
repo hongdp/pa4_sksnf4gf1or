@@ -31,6 +31,7 @@ def search_route():
         info = {}
         info['url'] = url[0][0]
         info['caption'] = caption[0][0]
+        info['picid'] =  obj['id']
         photo_info.append(info)
 
     return render_template('search.html', query = query, photos = photo_info)
