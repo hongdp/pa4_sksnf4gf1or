@@ -5,19 +5,21 @@
   - Dapeng Hong (hongdp)
   - Chengwei Dai (joedai)
 
-
+### Link to homepage
+  - [Link For Running Version](http://eecs485-09.eecs.umich.edu:5688/sksnf4gf1or/pa4/search)
 ### Details:
-  - [Link For Running Version](http://eecs485-09.eecs.umich.edu:5888/sksnf4gf1or/pa3/)
+  - We use c++ library
+  - We are using the same schema as PA3, Album Photo Contain
+  - We use port 6288 for c++ indexserver
 
 ### Deploy:
-  - `cd pa3/python/`
+  - `cd pa4/python/`
   - `virtualenv venv --distribute`
   - `source venv/bin/activate` (run for every new terminal window)
   - `pip install -r requirements.txt`
-  - `gunicorn -b eecs485-09.eecs.umich.edu:5888 -b eecs485-09.eecs.umich.edu:5988 -w 4 -D app:app`
+  - `gunicorn -b eecs485-09.eecs.umich.edu:5688 -b eecs485-09.eecs.umich.edu:5788 -w 4 -D app:app`
   - go to link above
 
-### Details:
-  - 'We did extra credit 1 and 2. So when you register for new user with a working email address, you should receiced a confirmation letter from group88eecs485@gmail.com with a link to home page '
-  - 'When you hit forget password in login page, you are asked to type the username and then a email with new password will send to your email on that username.'
-  - 'We also did the alignment!'
+### Reset Database:
+  - Run sql/load_xml.sql in mysql
+
