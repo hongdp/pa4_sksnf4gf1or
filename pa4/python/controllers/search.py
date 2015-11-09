@@ -11,8 +11,8 @@ search = Blueprint('search', __name__, template_folder='views')
 def search_route():
 
     query = request.args.get('query')
-    # result = requests.get('http://eecs485-09.eecs.umich.edu/:6288/search?q=%s', % (query))
-    result_obj = requests.get('http://localhost:4000/search?q=%s' % (query))
+    result_obj = requests.get('http://eecs485-09.eecs.umich.edu:6288/search?q=%s' % (query))
+    # result_obj = requests.get('http://localhost:4000/search?q=%s' % (query))
     result = json.loads(result_obj.text)
     photo_info = []
     con = mysql.connection

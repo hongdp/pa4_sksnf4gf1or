@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 #include <cmath>
-
+#include <algorithm>
 
 #include "mongoose.h"
 

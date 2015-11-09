@@ -8,6 +8,7 @@
 #include <cmath>
 #include <functional>
 #include <string>
+#include <algorithm>
 using namespace std;
 
 
