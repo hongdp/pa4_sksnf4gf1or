@@ -7,3 +7,4 @@ search = Blueprint('search', __name__, template_folder='views')
 
 @search.route(append_key('/search'), methods=['GET'])
 def search_route():
+    return render_template('search.html')
