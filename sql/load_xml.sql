@@ -124,6 +124,6 @@ DELIMITER ;
 
 LOAD XML LOCAL INFILE '../resources/search.xml' INTO TABLE Album rows identified by '<album>';
 UPDATE Album set access='public' where title='search';
-LOAD XML LOCAL INFILE '../resources/search.xml' INTO TABLE Photo rows identified by '<photo>' (@sequencenum, @url, @filename, @caption, @datetaken) SET picid=@sequencenum, url=@url, format='jpg', date=@datetaken;
+LOAD XML LOCAL INFILE '../resources/search.xml' INTO TABLE Photo rows identified by '<photo>' (@sequencenum, @url, @filename, @caption, @datetaken) SET picid=@sequencenum, url=CONCAT('/static/',@url), format='jpg', date=@datetaken;
 LOAD XML LOCAL INFILE '../resources/search.xml' INTO TABLE Contain rows identified by '<photo>' (@sequencenum, @url, @filename, @caption, @datetaken) SET albumid=1, picid=@sequencenum, caption=@caption, sequencenum=@sequencenum;
 
