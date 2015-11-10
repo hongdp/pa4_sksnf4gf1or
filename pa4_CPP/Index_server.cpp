@@ -142,7 +142,7 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 	// stat feq
 	while (strstream >> token) {
 		for_each(token.begin(), token.end(), [](char& ch){ch = tolower(ch);});
-		if (stop_words.find(token) == stop_words.end()) {
+		if (stop_words.find(token) != stop_words.end()) {
 			continue;
 		}
 		for(auto it = token.begin(); it != token.end();){
