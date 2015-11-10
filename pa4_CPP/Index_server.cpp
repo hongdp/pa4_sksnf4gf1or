@@ -35,17 +35,7 @@ namespace {
     ostream& operator<< (ostream&, const Query_hit&);
 }
 
-struct weight{
-	int doc_id;
-	double weight;
-};
 
-struct word_info{
-	double idf;
-	vector <weight> weights;
-};
-
-map <string,word_info> index_map;
 pthread_mutex_t mutex;
 
 // Runs the index server on the supplied port number.
@@ -81,6 +71,17 @@ void Index_server::run(int port)
 void Index_server::init(ifstream& infile)
 {
     string index;
+	ifstream myFile;
+	myFile.open("stop_words.txt");
+	std::string word;
+	if (myFile.is_open()) {
+		while (myFile >> word) {
+			//add word to set
+			stop_words.insert(word);
+			//cout << word<< endl;
+		}
+	}
+	myFile.close();
     while(getline(infile, index)){
       stringstream ss;
       ss<<index;
@@ -141,6 +142,9 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 	// stat feq
 	while (strstream >> token) {
 		for_each(token.begin(), token.end(), [](char& ch){ch = tolower(ch);});
+		if (stop_words.find(token) == stop_words.end()) {
+			continue;
+		}
 		for(auto it = token.begin(); it != token.end();){
 			if (!isalnum(*it)) {
 				token.erase(it);
@@ -149,7 +153,7 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 			}
 		}
 		if (index_map.find(token) == index_map.end()) {
-			continue;
+			return;
 		}
 		query_words_info[token].feq++;
 	}
