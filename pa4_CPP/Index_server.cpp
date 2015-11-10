@@ -152,6 +152,9 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 				it++;
 			}
 		}
+		if (token == "") {
+			continue;
+		}
 		if (index_map.find(token) == index_map.end()) {
 			return;
 		}
