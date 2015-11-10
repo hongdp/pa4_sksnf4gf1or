@@ -177,13 +177,17 @@ void Index_server::process_query(const string& query, vector<Query_hit>& hits)
 			auto hit_it = hits_map.find(id);
 			if (hit_it != hits_map.end()) {
 				hit_it->second.score += w*it->weight;
+				hit_it->second.times++;
 			} else {
 				hits_map.insert(make_pair(id,Query_hit{id,w*it->weight}));
 			}
 		}
 	}
-	
+	int query_words_num = query_words_info.size();
 	for (auto hit_it = hits_map.begin(); hit_it != hits_map.end(); hit_it++) {
+		if (query_words_num > hit_it->second.times) {
+			continue;
+		}
 		hits.push_back(hit_it->second);
 	}
 	sort(hits.begin(), hits.end(), [](const Query_hit& lhs, const Query_hit& rhs){

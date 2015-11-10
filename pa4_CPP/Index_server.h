@@ -8,11 +8,12 @@
 
 struct Query_hit {
 	Query_hit(const std::string& id_, double score_)
-        : id(id_), score(score_)
+        : id(id_), score(score_), times(1)
         {}
 
 	std::string id;
     double score;
+	int times;
 	bool operator< (const Query_hit& rhs) const{
 		return id < rhs.id;
 	}
