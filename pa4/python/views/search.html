@@ -10,6 +10,11 @@
         </div>
     </form>
 </div>
+{% if not query==""  %}
+<div class="row">
+    <p>we found {{ photos|length }} results for you.</p>
+</div>
+{% endif %}
 <div class="row">
     <ul>
         {% for photo in photos %}
